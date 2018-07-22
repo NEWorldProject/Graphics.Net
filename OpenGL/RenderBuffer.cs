@@ -20,6 +20,8 @@ namespace OpenGL
 {
     public static partial class Gl
     {
+        public const uint RenderBuffer = 0x8D41;
+        
         internal unsafe delegate void GenRenderbuffersProc(int n, uint* renderbuffers);
 
         internal unsafe delegate void DeleteRenderbuffersProc(int n, uint* renderbuffers);
@@ -56,8 +58,7 @@ namespace OpenGL
             }
         }
 
-        public void SetStorage(uint fmt, Vec2<int> size) =>
-            Gl.NamedRenderbufferStorage(_hdc, fmt, size.X, size.Y);
+        public void SetStorage(uint fmt, Vec2<int> size) => Gl.NamedRenderbufferStorage(_hdc, fmt, size.X, size.Y);
 
         public uint Raw() => _hdc;
 

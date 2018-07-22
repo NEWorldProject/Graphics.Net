@@ -33,6 +33,8 @@ namespace OpenGL
         static partial void InitRenderBuffer();
         static partial void InitDataBuffer();
         static partial void InitOthers();
+        static partial void InitTexture();
+        static partial void InitFrameBuffer();
 
         public static void Init(GetProcAddressProc getProcAddressProc)
         {
@@ -41,7 +43,10 @@ namespace OpenGL
             InitShader();
             InitRenderBuffer();
             InitDataBuffer();
+            InitTexture();
+            InitFrameBuffer();
             InitOthers();
         }
+
     }
 }

@@ -23,6 +23,13 @@ namespace OpenGL
 {
     static partial class Gl
     {
+        public const uint FragmentShader = 0x8B30;
+        public const uint VertexShader = 0x8B31;
+        public const uint GeometryShader = 0x8DD9;
+        internal const uint InfoLogLength = 0x8B84;
+        internal const uint CompileStatus = 0x8B81;
+        internal const uint LinkStatus = 0x8B82;
+        
         internal delegate void CompileShaderProc(uint shader);
 
         internal delegate uint CreateProgramProc();

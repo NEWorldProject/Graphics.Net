@@ -22,6 +22,17 @@ namespace OpenGL
 {
     public static partial class Gl
     {
+        public const uint StreamDraw = 0x88E0;
+        public const uint StreamRead = 0x88E1;
+        public const uint StreamCopy = 0x88E2;
+        public const uint StaticDraw = 0x88E4;
+        public const uint StaticRead = 0x88E5;
+        public const uint StaticCopy = 0x88E6;
+        public const uint DynamicDraw = 0x88E8;
+        public const uint DynamicRead = 0x88E9;
+        public const uint DynamicCopy = 0x88EA;
+        public const uint UniformBuffer = 0x8A11;
+        
         internal unsafe delegate void GenBuffersProc(int n, uint* buffers);
 
         internal unsafe delegate void DeleteBuffersProc(int n, uint* buffers);

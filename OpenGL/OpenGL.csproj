@@ -42,10 +42,12 @@
   <ItemGroup>
     <Compile Include="Basics.cs" />
     <Compile Include="DataBuffer.cs" />
+    <Compile Include="FrameBuffer.cs" />
     <Compile Include="Others.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RenderBuffer.cs" />
     <Compile Include="Shader.cs" />
+    <Compile Include="Texture.cs" />
     <Compile Include="VertexArray.cs" />
   </ItemGroup>
   <ItemGroup>
