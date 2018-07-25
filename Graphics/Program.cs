@@ -14,6 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Reflection.Emit;
 using Core;
 using OpenGL;
 
@@ -70,9 +71,10 @@ namespace Graphics
     {
         public static void Main(string[] args)
         {
-            var app = new App();
-            app.Run();
-            app.Dispose();
+            using (var app = new App())
+            {
+                app.Run();
+            }
         }
     }
 }

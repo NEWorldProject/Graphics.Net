@@ -21,7 +21,7 @@ namespace OpenGL
 {
     public static partial class Gl
     {
-        internal unsafe delegate void GenVertexArraysProc(int n, uint* arrays);
+        internal unsafe delegate void CreateVertexArraysProc(int n, uint* arrays);
 
         internal unsafe delegate void DeleteVertexArraysProc(int n, uint* arrays);
 
@@ -31,35 +31,35 @@ namespace OpenGL
 
         internal delegate void DisableVertexArrayAttribProc(uint vaobj, uint index);
 
-        internal delegate void VertexArrayVertexAttribFormatProc(uint vaobj, uint attribindex, int size,
-            uint type, byte normalized, uint relativeoffset);
+        internal delegate void VertexArrayAttribFormatProc(uint vaobj, uint attribindex, int size, uint type, 
+            byte normalized, uint relativeoffset);
 
-        internal delegate void VertexArrayVertexAttribBindingProc(uint vaobj, uint attribindex, uint bindingindex);
+        internal delegate void VertexArrayAttribBindingProc(uint vaobj, uint attribindex, uint bindingindex);
 
-        internal delegate void VertexArrayBindVertexBufferProc(uint vaobj, uint bindingindex, uint buffer,
+        internal delegate void VertexArrayVertexBufferProc(uint vaobj, uint bindingindex, uint buffer,
             UIntPtr offset, int stride);
 
-        internal static GenVertexArraysProc GenVertexArrays;
+        internal static CreateVertexArraysProc CreateVertexArrays;
         internal static DeleteVertexArraysProc DeleteVertexArrays;
         internal static BindVertexArrayProc BindVertexArray;
         internal static EnableVertexArrayAttribProc EnableVertexArrayAttrib;
         internal static DisableVertexArrayAttribProc DisableVertexArrayAttrib;
-        internal static VertexArrayVertexAttribFormatProc VertexArrayVertexAttribFormat;
-        internal static VertexArrayVertexAttribBindingProc VertexArrayVertexAttribBinding;
-        internal static VertexArrayBindVertexBufferProc VertexArrayBindVertexBuffer;
+        internal static VertexArrayAttribFormatProc VertexArrayAttribFormat;
+        internal static VertexArrayAttribBindingProc VertexArrayAttribBinding;
+        internal static VertexArrayVertexBufferProc VertexArrayVertexBuffer;
 
         static partial void InitVertexArray()
         {
-            GenVertexArrays = Get<GenVertexArraysProc>("glGenVertexArrays");
+            CreateVertexArrays = Get<CreateVertexArraysProc>("glCreateVertexArrays");
             DeleteVertexArrays = Get<DeleteVertexArraysProc>("glDeleteVertexArrays");
             BindVertexArray = Get<BindVertexArrayProc>("glBindVertexArray");
-            EnableVertexArrayAttrib = Get<EnableVertexArrayAttribProc>("glEnableVertexArrayAttribEXT");
-            DisableVertexArrayAttrib = Get<DisableVertexArrayAttribProc>("glDisableVertexArrayAttribEXT");
-            VertexArrayVertexAttribFormat =
-                Get<VertexArrayVertexAttribFormatProc>("glVertexArrayVertexAttribFormatEXT");
-            VertexArrayVertexAttribBinding =
-                Get<VertexArrayVertexAttribBindingProc>("glVertexArrayVertexAttribBindingEXT");
-            VertexArrayBindVertexBuffer = Get<VertexArrayBindVertexBufferProc>("glVertexArrayBindVertexBufferEXT");
+            EnableVertexArrayAttrib = Get<EnableVertexArrayAttribProc>("glEnableVertexArrayAttrib");
+            DisableVertexArrayAttrib = Get<DisableVertexArrayAttribProc>("glDisableVertexArrayAttrib");
+            VertexArrayAttribFormat =
+                Get<VertexArrayAttribFormatProc>("glVertexArrayAttribFormat");
+            VertexArrayAttribBinding =
+                Get<VertexArrayAttribBindingProc>("glVertexArrayAttribBinding");
+            VertexArrayVertexBuffer = Get<VertexArrayVertexBufferProc>("glVertexArrayVertexBuffer");
         }
     }
 
@@ -69,7 +69,7 @@ namespace OpenGL
         {
             fixed (uint* addr = &_hdc)
             {
-                Gl.GenVertexArrays(1, addr);
+                Gl.CreateVertexArrays(1, addr);
             }
         }
 
@@ -89,17 +89,16 @@ namespace OpenGL
 
         public void AttribFormat(uint index, int size, uint type, bool normalized, uint relativeOffset)
         {
-            Use();
             byte norm = 0;
             if (normalized) norm = 1;
-            Gl.VertexArrayVertexAttribFormat(_hdc, index, size, type, norm, relativeOffset);
+            Gl.VertexArrayAttribFormat(_hdc, index, size, type, norm, relativeOffset);
         }
 
         public void AttribBinding(uint attribIndex, uint bufferIndex) =>
-            Gl.VertexArrayVertexAttribBinding(_hdc, attribIndex, bufferIndex);
+            Gl.VertexArrayAttribBinding(_hdc, attribIndex, bufferIndex);
 
         public void BindBuffer(uint index, DataBuffer buffer, uint offset, int stride) =>
-            Gl.VertexArrayBindVertexBuffer(_hdc, index, buffer.Raw(), (UIntPtr) offset, stride);
+            Gl.VertexArrayVertexBuffer(_hdc, index, buffer.Raw(), (UIntPtr) offset, stride);
 
         public uint Raw() => _hdc;
 

@@ -87,10 +87,10 @@ namespace Core
         // Swap row r1, row r2
         public void SwapRows(uint r1, uint r2)
         {
-            Utilities.Swap(ref Data[r1 * 4 + 0], ref Data[r2 * 4 + 0]);
-            Utilities.Swap(ref Data[r1 * 4 + 1], ref Data[r2 * 4 + 1]);
-            Utilities.Swap(ref Data[r1 * 4 + 2], ref Data[r2 * 4 + 2]);
-            Utilities.Swap(ref Data[r1 * 4 + 3], ref Data[r2 * 4 + 3]);
+            Generic.Swap(ref Data[r1 * 4 + 0], ref Data[r2 * 4 + 0]);
+            Generic.Swap(ref Data[r1 * 4 + 1], ref Data[r2 * 4 + 1]);
+            Generic.Swap(ref Data[r1 * 4 + 2], ref Data[r2 * 4 + 2]);
+            Generic.Swap(ref Data[r1 * 4 + 3], ref Data[r2 * 4 + 3]);
         }
 
         // Row r *= k
@@ -252,16 +252,6 @@ namespace Core
                     [15] = 1.0f
                 }
             };
-        }
-    }
-
-    public static class Utilities
-    {
-        public static void Swap<T>(ref T a, ref T b)
-        {
-            var t = a;
-            a = b;
-            b = t;
         }
     }
 }

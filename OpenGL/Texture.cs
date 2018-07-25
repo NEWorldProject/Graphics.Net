@@ -21,51 +21,52 @@ namespace OpenGL
     public static partial class Gl
     {
         internal const uint Texture2D = 0x0DE1;
-        internal const uint Texture0 = 0x84C0;
 
-        internal unsafe delegate void GenTexturesProc(int n, uint* textures);
+        internal unsafe delegate void CreateTexturesProc(uint target, int n, uint* textures);
 
         internal unsafe delegate void DeleteTexturesProc(int n, uint* textures);
 
-        internal delegate void TextureParameteriProc(uint texture, uint target, uint pname, int param);
+        internal delegate void TextureParameteriProc(uint texture, uint pname, int param);
 
-        internal delegate void TextureParameterfProc(uint texture, uint target, uint pname, float param);
+        internal delegate void TextureParameterfProc(uint texture, uint pname, float param);
 
-        internal delegate void BindTextureProc(uint target, uint texture);
+        internal delegate void BindTextureUnitProc(uint unit, uint texture);
 
-        internal delegate void ActiveTextureProc(uint slot);
+        internal delegate void TextureStorage2DProc(uint texture, int levels, uint format, int width, int height);
 
-        internal delegate void TextureImage2DProc(uint texture, uint target, int level, int internalformat, int width,
-            int height, int border, uint format, uint type, byte[] pixels);
+        internal delegate void TextureSubImage2DProc(uint texture, int level, int xoffset, int yoffset, int width,
+            int height, uint format, uint type, byte[] pixels);
 
-        internal static GenTexturesProc GenTextures;
+        internal static CreateTexturesProc CreateTextures;
         internal static DeleteTexturesProc DeleteTextures;
         internal static TextureParameteriProc TextureParameteri;
         internal static TextureParameterfProc TextureParameterf;
-        internal static BindTextureProc BindTexture;
-        internal static ActiveTextureProc ActiveTexture;
-        internal static TextureImage2DProc TextureImage2D;
+        internal static BindTextureUnitProc BindTextureUnit;
+        internal static TextureStorage2DProc TextureStorage2D;
+        internal static TextureSubImage2DProc TextureSubImage2D;
 
         static partial void InitTexture()
         {
-            GenTextures = Get<GenTexturesProc>("glGenTextures");
+            CreateTextures = Get<CreateTexturesProc>("glCreateTextures");
             DeleteTextures = Get<DeleteTexturesProc>("glDeleteTextures");
-            TextureParameteri = Get<TextureParameteriProc>("glTextureParameteriEXT");
-            TextureParameterf = Get<TextureParameterfProc>("glTextureParameterfEXT");
-            BindTexture = Get<BindTextureProc>("glBindTexture");
-            ActiveTexture = Get<ActiveTextureProc>("glActiveTexture");
-            TextureImage2D = Get<TextureImage2DProc>("glTextureImage2DEXT");
+            TextureParameteri = Get<TextureParameteriProc>("glTextureParameteri");
+            TextureParameterf = Get<TextureParameterfProc>("glTextureParameterf");
+            BindTextureUnit = Get<BindTextureUnitProc>("glBindTextureUnit");
+            TextureStorage2D = Get<TextureStorage2DProc>("glTextureStorage2D");
+            TextureSubImage2D = Get<TextureSubImage2DProc>("glTextureSubImage2D");
         }
     }
 
     public class Texture : StrictDispose
     {
-        public unsafe Texture()
+        public unsafe Texture(int levels, PixelInternalFormats internalFormat, Vec2<int> size)
         {
             fixed (uint* addr = &_hdc)
             {
-                Gl.GenTextures(1, addr);
+                Gl.CreateTextures(Gl.Texture2D, 1, addr);
             }
+
+            Gl.TextureStorage2D(_hdc, levels, (uint) internalFormat, size.X, size.Y);
         }
 
         protected override unsafe void Release()
@@ -76,19 +77,54 @@ namespace OpenGL
             }
         }
 
-        public void SetParameter(uint name, int param) => Gl.TextureParameteri(_hdc, Gl.Texture2D, name, param);
-
-        public void SetParameter(uint name, float param) => Gl.TextureParameterf(_hdc, Gl.Texture2D, name, param);
-
-        public void Use(uint slot)
+        public enum Filter
         {
-            // Lack of DSA, simulate it
-            Gl.ActiveTexture(Gl.Texture0 + slot);
-            Gl.BindTexture(Gl.Texture2D, _hdc);
+            Nearest = 0x2600,
+            Linear = 0x2601,
+            NearestMipmapNearest = 0x2700,
+            LinearMipmapNearest = 0x2701,
+            NearestMipmapLinear = 0x2702,
+            LinearMipmapLinear = 0x2703
         }
 
-        public void Image(int level, int internalFormat, Vec2<int> size, uint format, uint type, byte[] data) =>
-            Gl.TextureImage2D(_hdc, Gl.Texture2D, level, internalFormat, size.X, size.Y, 0, format, type, data);
+        public enum Warp
+        {
+            ClampToEdge = 0x812F,
+            ClampToBorder = 0x812D,
+            MirroredRepeat = 0x8370,
+            Repeat = 0x2901,
+            MirrorClampToEdge = 0x8743
+        }
+
+        private void SetParameter(uint name, int param) => Gl.TextureParameteri(_hdc, name, param);
+
+        private void SetParameter(uint name, float param) => Gl.TextureParameterf(_hdc, name, param);
+
+        public Filter MinifyingFilter
+        {
+            set => SetParameter(0x2801, (int) value);
+        }
+
+        public Filter MagnificationFilter
+        {
+            set => SetParameter(0x2800, (int) value);
+        }
+
+        public Warp WarpS
+        {
+            set => SetParameter(0x2802, (int) value);
+        }
+
+        public Warp WarpT
+        {
+            set => SetParameter(0x2803, (int) value);
+        }
+
+        public void Use(uint slot) => Gl.BindTextureUnit(slot, _hdc);
+
+        public void Image(int level, Rect<int> area, PixelTypes format, PixelDataFormats type, byte[] data) =>
+            Gl.TextureSubImage2D(_hdc, level, area.Min.X, area.Max.Y, area.Delta.X, area.Delta.Y, (uint) format,
+                (uint) type, data);
 
         public uint Raw() => _hdc;
 

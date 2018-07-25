@@ -36,7 +36,7 @@ namespace OpenGL
         {
             GenRenderbuffers = Get<GenRenderbuffersProc>("glGenRenderbuffers");
             DeleteRenderbuffers = Get<DeleteRenderbuffersProc>("glDeleteRenderbuffers");
-            NamedRenderbufferStorage = Get<NamedRenderbufferStorageProc>("glNamedRenderbufferStorageEXT");
+            NamedRenderbufferStorage = Get<NamedRenderbufferStorageProc>("glNamedRenderbufferStorage");
         }
     }
 
@@ -58,7 +58,8 @@ namespace OpenGL
             }
         }
 
-        public void SetStorage(uint fmt, Vec2<int> size) => Gl.NamedRenderbufferStorage(_hdc, fmt, size.X, size.Y);
+        public void SetStorage(PixelInternalFormats fmt, Vec2<int> size) => 
+            Gl.NamedRenderbufferStorage(_hdc, (uint)fmt, size.X, size.Y);
 
         public uint Raw() => _hdc;
 

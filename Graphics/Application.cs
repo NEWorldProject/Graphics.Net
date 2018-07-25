@@ -26,9 +26,9 @@ namespace Graphics
         {
             if (SDL.SDL_Init(SDL.SDL_INIT_VIDEO) < 0)
                 throw new Exception("SDL could not initialize! SDL_Error: " + SDL.SDL_GetError());
-            //Use OpenGL 3.1 core
-            SDL.SDL_GL_SetAttribute(SDL.SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-            SDL.SDL_GL_SetAttribute(SDL.SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, 3);
+            //Use OpenGL 4.5 core
+            SDL.SDL_GL_SetAttribute(SDL.SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+            SDL.SDL_GL_SetAttribute(SDL.SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, 5);
             SDL.SDL_GL_SetAttribute(SDL.SDL_GLattr.SDL_GL_STENCIL_SIZE, 8);
             SDL.SDL_GL_SetAttribute(SDL.SDL_GLattr.SDL_GL_CONTEXT_PROFILE_MASK,
                 (int) SDL.SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE);

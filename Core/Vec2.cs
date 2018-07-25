@@ -14,57 +14,67 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace Core
 {
+    using static Generic;
+    
     public struct Vec2<T>
     {
-        private T[] Data;
-
-        public Vec2(T[] data) => Data = data;
-
-        public Vec2(T x, T y) => Data = new[] {x, y};
-
-        public T X
+        public Vec2(T x, T y)
         {
-            get => Data[0];
-            set => Data[0] = value;
+            X = x;
+            Y = y;
         }
 
-        public T Y
+        public T X, Y;
+
+        public double LengthSqr() => Square(X) + Square(Y);
+
+        public double Length() => Math.Sqrt(LengthSqr());
+        
+        public void Normalize()
         {
-            get => Data[1];
-            set => Data[1] = value;
+            object length = Cast<T>(Length());
+            X = Divide(X, length);
+            Y = Divide(Y, length);
         }
+        
+        public static Vec2<T> operator + (Vec2<T> lhs, Vec2<T> rhs) => 
+            new Vec2<T>(Add(lhs.X, rhs.X), Add(lhs.Y, rhs.Y));
+
+        public static Vec2<T> operator - (Vec2<T> lhs, Vec2<T> rhs) =>
+            new Vec2<T>(Substract(lhs.X, rhs.X), Substract(lhs.Y, rhs.Y));
     }
 
     public struct Vec3<T>
     {
-        private T[] Data;
-
-        public Vec3(T[] data) => Data = data;
-
-        public Vec3(T x, T y, T z) => Data = new[] {x, y, z};
-
-        public T X
+        public Vec3(T x, T y, T z) 
         {
-            get => Data[0];
-            set => Data[0] = value;
+            X = x;
+            Y = y;
+            Z = z;
         }
 
-        public T Y
-        {
-            get => Data[1];
-            set => Data[1] = value;
-        }
+        public T X, Y, Z;
 
-        public T Z
-        {
-            get => Data[2];
-            set => Data[2] = value;
-        }
+        public double LengthSqr() => Square(X) + Square(Y) + Square(Z);
+
+        public double Length() => Math.Sqrt(LengthSqr());
 
         public void Normalize()
         {
+            object length = Cast<T>(Length());
+            X = Divide(X, length);
+            Y = Divide(Y, length);
+            Z = Divide(Z, length);
         }
+        
+        public static Vec3<T> operator + (Vec3<T> lhs, Vec3<T> rhs) =>
+            new Vec3<T>(Add(lhs.X, rhs.X), Add(lhs.Y, rhs.Y), Add(lhs.Z, rhs.Z));
+
+        public static Vec3<T> operator - (Vec3<T> lhs, Vec3<T> rhs) =>
+            new Vec3<T>(Substract(lhs.X, rhs.X), Substract(lhs.Y, rhs.Y), Substract(lhs.Z, rhs.Z));
     }
 }

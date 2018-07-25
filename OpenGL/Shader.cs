@@ -56,10 +56,7 @@ namespace OpenGL
 
         internal delegate void UseProgramProc(uint program);
 
-        internal delegate uint GetUniformBlockIndexProc(uint program, byte[] uniformBlockName);
-
-        internal delegate void UniformBlockBindingProc(uint program, uint uniformBlockIndex,
-            uint uniformBlockBinding);
+        internal delegate void ProgramUniform1IProc(uint program, int location, int v0);
 
         internal static CompileShaderProc CompileShader;
         internal static CreateProgramProc CreateProgram;
@@ -74,8 +71,7 @@ namespace OpenGL
         internal static LinkProgramProc LinkProgram;
         internal static ShaderSourceProc ShaderSource;
         internal static UseProgramProc UseProgram;
-        internal static GetUniformBlockIndexProc GetUniformBlockIndex;
-        internal static UniformBlockBindingProc UniformBlockBinding;
+        internal static ProgramUniform1IProc ProgramUniform1I;
 
         static partial void InitShader()
         {
@@ -92,8 +88,7 @@ namespace OpenGL
             LinkProgram = Get<LinkProgramProc>("glLinkProgram");
             ShaderSource = Get<ShaderSourceProc>("glShaderSource");
             UseProgram = Get<UseProgramProc>("glUseProgram");
-            GetUniformBlockIndex = Get<GetUniformBlockIndexProc>("glGetUniformBlockIndex");
-            UniformBlockBinding = Get<UniformBlockBindingProc>("glUniformBlockBinding");
+            ProgramUniform1I = Get<ProgramUniform1IProc>("glProgramUniform1iEXT");
         }
     }
 
@@ -175,11 +170,7 @@ namespace OpenGL
 
         public void Use() => Gl.UseProgram(_hdc);
 
-        public void BindUniformBlock(string name, uint index)
-        {
-            var blockIndex = Gl.GetUniformBlockIndex(_hdc, Gl.Utf8ToNative(name));
-            Gl.UniformBlockBinding(_hdc, blockIndex, index);
-        }
+        public void Uniform(int location, int val) => Gl.ProgramUniform1I(_hdc, location, val);
 
         public uint Raw() => _hdc;
 

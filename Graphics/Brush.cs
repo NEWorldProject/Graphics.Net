@@ -45,21 +45,17 @@ namespace Graphics
     public class SolidColorBrush : Brush
     {
         private const string Vertex = @"
-#version 330 core
+#version 430 core
 layout (location = 0) in vec2 position;
-layout (std140) uniform vertexMvp {
-    mat4 mvp;
-};
+layout (std140, binding = 0) uniform vertexMvp { mat4 mvp; };
 void main() {
     gl_Position = mvp * vec4(position.x, position.y, 0.0, 1.0);
 }
 ";
 
         private const string Fragment = @"
-#version 330
-layout (std140) uniform brushData {
-    vec4 color;
-};
+#version 430 core
+layout (std140, binding = 1) uniform brushData { vec4 color; };
 out vec4 outputColor;
 void main() {
     outputColor = color;
@@ -70,8 +66,6 @@ void main() {
         {
             private SolidColorBrushType() : base(Vertex, Fragment)
             {
-                ShaderProgram.BindUniformBlock("vertexMvp", 0);
-                ShaderProgram.BindUniformBlock("brushData", 1);
             }
 
             public static SolidColorBrushType Instance()

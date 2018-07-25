@@ -33,7 +33,7 @@ namespace OpenGL
         public const uint DynamicCopy = 0x88EA;
         public const uint UniformBuffer = 0x8A11;
         
-        internal unsafe delegate void GenBuffersProc(int n, uint* buffers);
+        internal unsafe delegate void CreateBuffersProc(int n, uint* buffers);
 
         internal unsafe delegate void DeleteBuffersProc(int n, uint* buffers);
 
@@ -44,7 +44,7 @@ namespace OpenGL
         internal unsafe delegate void NamedBufferSubDataProc(uint buffer, UIntPtr offset, UIntPtr size,
             void* data);
 
-        internal static GenBuffersProc GenBuffers;
+        internal static CreateBuffersProc CreateBuffers;
         internal static DeleteBuffersProc DeleteBuffers;
         internal static NamedBufferDataProc NamedBufferData;
         internal static BindBufferBaseProc BindBufferBase;
@@ -52,11 +52,11 @@ namespace OpenGL
 
         static partial void InitDataBuffer()
         {
-            GenBuffers = Get<GenBuffersProc>("glGenBuffers");
+            CreateBuffers = Get<CreateBuffersProc>("glCreateBuffers");
             DeleteBuffers = Get<DeleteBuffersProc>("glDeleteBuffers");
-            NamedBufferData = Get<NamedBufferDataProc>("glNamedBufferDataEXT");
+            NamedBufferData = Get<NamedBufferDataProc>("glNamedBufferData");
             BindBufferBase = Get<BindBufferBaseProc>("glBindBufferBase");
-            NamedBufferSubData = Get<NamedBufferSubDataProc>("glNamedBufferSubDataEXT");
+            NamedBufferSubData = Get<NamedBufferSubDataProc>("glNamedBufferSubData");
         }
     }
 
@@ -66,7 +66,7 @@ namespace OpenGL
         {
             fixed (uint* addr = &_hdc)
             {
-                Gl.GenBuffers(1, addr);
+                Gl.CreateBuffers(1, addr);
             }
         }
 
@@ -95,6 +95,8 @@ namespace OpenGL
             DataRaw(data.Length * sizeof(float), (void*) ptr, usage);
             Marshal.FreeHGlobal(ptr);
         }
+        
+        public unsafe void DataSection(uint offset, uint data) => DataSectionRaw(offset, sizeof(uint), &data);
 
         public unsafe void DataSection(uint offset, float[] data)
         {

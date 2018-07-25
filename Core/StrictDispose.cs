@@ -30,6 +30,23 @@ namespace Core
             return target;
         }
 
+        protected void Reject<T>(T target, bool disposeNow = true) where T : StrictDispose
+        {
+            if (target == _first)
+            {
+                _first = target._sibling;
+                return;
+            }
+            
+            var current = _first;
+            while (current._sibling != target)
+                current = current._sibling;
+            current._sibling = target._sibling;
+            
+            if (disposeNow)
+                target.Dispose();
+        }
+
         protected virtual void Release()
         {
         }
